@@ -1,0 +1,34 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: emp
+      POSTGRES_PASSWORD: emp123
+      POSTGRES_DB: empdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    environment:
+      DB_HOST: db
+      DB_USER: emp
+      DB_PASSWORD: emp123
+      DB_NAME: empdb
+      DB_PORT: "5432"
+      ALLOWED_ORIGINS: http://localhost:3000
+    depends_on:
+      - db
+    restart: on-failure
+
+  frontend:
+    build: ./frontend
+    environment:
+      BACKEND_HOST: backend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
