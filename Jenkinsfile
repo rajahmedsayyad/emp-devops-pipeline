@@ -65,7 +65,9 @@ pipeline {
                     sh '''
                         kubectl get pods -o wide
                         kubectl get svc,ingress
-                        curl -sf http://13.205.112.178/api/employees
+                        echo "Waiting 10s for Ingress routing to settle..."
+                        sleep 10
+                        curl -s --retry 5 --retry-delay 3 http://13.205.112.178/api/employees
                     '''
                 }
             }
